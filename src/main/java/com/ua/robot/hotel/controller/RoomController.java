@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,6 +56,17 @@ public class RoomController {
                 .map(this::convertToRoomDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(roomDtoList);
+    }
+    @GetMapping("/rooms/available")
+    public ResponseEntity<List<RoomDto>> searchAvailableRooms(
+            @RequestParam("startDate") LocalDate startDate,
+            @RequestParam("endDate") LocalDate endDate
+    ) {
+        List<Room> availableRooms = roomService.getAvailableRooms(startDate, endDate);
+        List<RoomDto> roomDtos = availableRooms.stream()
+                .map(this::convertToRoomDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(roomDtos);
     }
 
     public RoomDto convertToRoomDto(Room room) {
